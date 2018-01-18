@@ -37,4 +37,23 @@ void Sobel(const cv::Mat src, cv::Mat &dst, cv::Mat &dstX,cv::Mat &dstY){
 	dstX = mX.clone();
 	dstY = mY.clone();
 }
+
+void Prewitt(const cv::Mat src, cv::Mat &dst, cv::Mat &dstX,cv::Mat &dstY){
+	int X[3][3] = {{-1,0,1},
+					{-1,0,1},
+					{-1,0,1}};
+	int Y[3][3] = {{-1,-1,-1},
+					{0,0,0},
+					{1,1,1}};
+	cv::Mat mX(src.size(),src.type()),mY(src.size(),src.type()),mXY(src.size(),src.type());
+	filter(src,mX,X);
+	filter(src,mY,Y);
+	for(int i = 0; i < src.rows; i++)
+		for(int j = 0; j < src.cols; j++){
+			mXY.at<uchar>(i,j) = sqrt(mX.at<uchar>(i,j)*mX.at<uchar>(i,j) + mY.at<uchar>(i,j)*mY.at<uchar>(i,j));
+		}
+	dst = mXY.clone();
+	dstX = mX.clone();
+	dstY = mY.clone();
+}
 #endif
