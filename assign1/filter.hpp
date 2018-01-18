@@ -73,21 +73,21 @@ void GaussianBlur(const cv::Mat src,cv::Mat &dst,int x, int y , float stdDev){
 
 double median(std::vector<int> scores)
 {
-  double median;
-  size_t size = scores.size();
+	double median;
+	size_t size = scores.size();
 
-  sort(scores.begin(), scores.end());
+	sort(scores.begin(), scores.end());
 
-  if (size  % 2 == 0)
-  {
-      median = (scores[size / 2 - 1] + scores[size / 2]) / 2;
-  }
-  else 
-  {
-      median = scores[size / 2];
-  }
+	if (size  % 2 == 0)
+	{
+	  median = (scores[size / 2 - 1] + scores[size / 2]) / 2;
+	}
+	else 
+	{
+	  median = scores[size / 2];
+	}
 
-  return median;
+	return median;
 }
 
 void MedianBlur(const cv::Mat src, cv::Mat &dst, int _x, int _y){
@@ -105,6 +105,27 @@ void MedianBlur(const cv::Mat src, cv::Mat &dst, int _x, int _y){
 				}
 			dst.at<uchar>(i,j) = median(temp);
 		}
+}
+
+double PSNR(const cv::Mat& I1, const cv::Mat& I2)
+{
+    cv::Mat s1;
+    cv::absdiff(I1, I2, s1);       // |I1 - I2|
+    s1.convertTo(s1, CV_32F);  // cannot make a square on 8 bits
+    s1 = s1.mul(s1);           // |I1 - I2|^2
+
+    cv::Scalar s = sum(s1);         // sum elements per channel
+
+    double sse = s.val[0] + s.val[1] + s.val[2]; // sum channels
+
+    if( sse <= 1e-10) // for small values return zero
+        return 0;
+    else
+    {
+        double  mse =sse /(double)(I1.channels() * I1.total());
+        double psnr = 10.0*log10((255*255)/mse);
+        return psnr;
+    }
 }
 
 #endif
