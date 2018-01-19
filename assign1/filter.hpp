@@ -61,7 +61,7 @@ void GaussianBlur(const cv::Mat src,cv::Mat &dst,int x, int y , float stdDev){
 				for(int l = 0; l < kernel.cols; l++){
 					int pic_i = i + k - kernel.rows/2;
 					int pic_j = j + l - kernel.cols/2;
-					if( pic_j < 0 || pic_i < 0)
+					if( pic_j < 0 || pic_i < 0 || pic_i > src.rows || pic_j > src.cols)
 						continue;
 					sum += kernel.at<double>(k,l)*src.at<uchar>(pic_i,pic_j);
 				}
