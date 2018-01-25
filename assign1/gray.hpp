@@ -1,5 +1,5 @@
-#ifndef GRAY_H
-#define GRAY_H
+#ifndef GRAY_HPP
+#define GRAY_HPP
 
 #include "headers.hpp"
 
