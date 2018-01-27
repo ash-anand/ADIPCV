@@ -54,7 +54,7 @@ void thresNextract(cv::Mat src, cv::Mat &extract, cv::Mat &letters){
       cv::Point( morph_size, morph_size ) ); 
     cv::morphologyEx( mask, mask, cv::MORPH_CLOSE, element, cv::Point(-1,-1), 5 ); 
     
-    std::vector<std::vector<cv::Point>> contours;
+    std::vector<std::vector<cv::Point> > contours;
     std::vector<cv::Vec4i> hierarchy;
     cv::findContours(mask,contours, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
 
