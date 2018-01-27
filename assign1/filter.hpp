@@ -51,7 +51,9 @@ cv::Mat getGaussian(int _x, int _y,float stdDev){
 	return kernel;
 }
 
-void GaussianBlur(const cv::Mat src,cv::Mat &dst,int x, int y , float stdDev){
+void GaussianBlur(cv::Mat src,cv::Mat &dst,int x, int y , float stdDev){
+	if(src.channels() > 1)
+		cv::cvtColor(src,src,cv::COLOR_BGR2GRAY);
 	cv::Mat kernel = getGaussian(x,y,stdDev).clone();
 	dst.create(src.size(),src.type());
 	for (int i = 0; i < src.rows; ++i){

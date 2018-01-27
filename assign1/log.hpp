@@ -65,7 +65,7 @@ void zeroEdge(cv::Mat src,int x, int y){
 				z.at<uchar>(i,j) = 255;
 		}
 	}
-	imshow("Zero",z);
+	imshow("Zero Crossing",z);
 }
 
 void LoG(const cv::Mat src, cv::Mat &dst, int x, int y, double stdDev){

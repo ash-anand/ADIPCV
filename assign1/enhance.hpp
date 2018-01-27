@@ -3,7 +3,7 @@
 
 #include "headers.hpp"
 
-void hist(const cv::Mat src, cv::Mat &dst){
+void histeqi(const cv::Mat src, cv::Mat &dst){
 	int sz = src.rows*src.cols;
 	std::vector<int> histList(256,0);
 	dst = src.clone();
