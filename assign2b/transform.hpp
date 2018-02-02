@@ -2,15 +2,18 @@
 #define TRANSFORM_HPP
 
 #include <opencv2/opencv.hpp>
+#include "opencv2/imgcodecs.hpp"
+#include "opencv2/highgui.hpp"
+#include "opencv2/stitching.hpp"
 #include <vector>
 #include <iostream>
 
 using namespace std;
 
-cv::Mat img,out[3];
+cv::Mat img;
+std::vector<cv::Mat> out;
 bool finished = false;
 std::vector<cv::Point2f> vertices;
-
 
 float getRealAspectRatio() {
 

@@ -31,14 +31,16 @@ void CallBackFunc(int event,int x,int y,int flags,void* userdata)
 }
 
 
-int main( )
+int main(int argc, char **argv)
 {         
     // Lambda Matrix
     Mat lambda( 2, 4, CV_32FC1 );
+    vertices.reserve(4);
+    out.reserve(3);
     //Input and Output Image;
     Mat input;
     //Load the image
-    input = imread( "ThreePanel4.jpg", 1 );
+    input = imread( argv[1], 1 );
     // resize(input,input,Size(),0.25,0.25);
     //Create a window
     int height;
@@ -89,7 +91,7 @@ int main( )
       lambda = getPerspectiveTransform( inputQuad, outputQuad );
       // Apply the Perspective Transform just found to the src image
       warpPerspective(input,output,lambda,output.size() );
-      out[i] = output.clone();
+      out.push_back(output.clone());
       finished = false;
     }
  
@@ -98,12 +100,23 @@ int main( )
     imshow("Image",input);
     resizeWindow("Image", 1200, 800);
     namedWindow("Output",CV_WINDOW_NORMAL);
+    namedWindow("OutputIn",CV_WINDOW_NORMAL);
     Mat output;
     hconcat(out[1],out[0],output);
     hconcat(output,out[2],output);
+    Mat mask(output.size(),CV_8UC1,Scalar(0));
+    int frac = 30;
+    for (int i = -frac; i < frac ; ++i)
+    {
+        mask.col(out[1].cols + i) = 255;
+        mask.col(output.cols - out[2].cols + i) = 255;
+    }
     imshow("Output",output);
+    inpaint(output,mask,output,25,INPAINT_TELEA);
+
+    imshow("OutputIn",output);
     resizeWindow("Output", 600, 400);
- 
+    resizeWindow("OutputIn", 600, 400);
     waitKey(0);
     return 0;
 }
