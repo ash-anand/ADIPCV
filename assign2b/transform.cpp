@@ -111,8 +111,9 @@ int main(int argc, char **argv)
         mask.col(out[1].cols + i) = 255;
         mask.col(output.cols - out[2].cols + i) = 255;
     }
+
     imshow("Output",output);
-    inpaint(output,mask,output,25,INPAINT_TELEA);
+    inpaint(output,mask,output,15,INPAINT_TELEA);
 
     imshow("OutputIn",output);
     resizeWindow("Output", 600, 400);

@@ -9,7 +9,7 @@
 #include <iostream>
 
 using namespace std;
-
+using namespace cv;
 cv::Mat img;
 std::vector<cv::Mat> out;
 bool finished = false;
@@ -50,6 +50,52 @@ float getRealAspectRatio() {
     }
 
     return (float)(whRatio);
+}
+
+Mat  dst, tmp;
+char* window_name = "Pyramids Demo";
+
+
+/**
+ * @function main
+ */
+Mat trans( cv::Mat src )
+{
+  /// General instructions
+  printf( "\n Zoom In-Out demo  \n " );
+  printf( "------------------ \n" );
+  printf( " * [u] -> Zoom in  \n" );
+  printf( " * [d] -> Zoom out \n" );
+  printf( " * [ESC] -> Close program \n \n" );
+
+  tmp = src;
+  dst = tmp;
+
+  /// Create window
+  namedWindow( window_name, CV_WINDOW_AUTOSIZE );
+  imshow( window_name, dst );
+
+  /// Loop
+  while( true )
+  {
+    int c;
+    c = waitKey(10);
+
+    if( (char)c == 27 )
+      { break; }
+    if( (char)c == 'u' )
+      { pyrUp( tmp, dst, Size( tmp.cols*2, tmp.rows*2 ) );
+        printf( "** Zoom In: Image x 2 \n" );
+      }
+    else if( (char)c == 'd' )
+     { pyrDown( tmp, dst, Size( tmp.cols/2, tmp.rows/2 ) );
+       printf( "** Zoom Out: Image / 2 \n" );
+     }
+
+    imshow( window_name, dst );
+    tmp = dst;
+  }
+  return dst;
 }
 
 #endif
