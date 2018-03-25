@@ -8,30 +8,53 @@ using namespace std;
 using namespace cv;
 
 Mat img,tem,orig;
+int point = 0;
+float lineA[3],lineB[3];
 std::vector<Point> points;
-int cCount;
+int cCount = 0;
 bool finished = false;
-Point center(-1,-1);
+float P[4][3];
 
 float getDistance(Point x, Point y){
 	return sqrt(pow(x.x-y.x,2) + pow(x.y-y.y,2));
+}
+
+void cross(float vect_A[], float vect_B[], float cross_P[])
+ 
+{
+    cross_P[0] = vect_A[1] * vect_B[2] - vect_A[2] * vect_B[1];
+    cross_P[1] = vect_A[0] * vect_B[2] - vect_A[2] * vect_B[0];
+    cross_P[2] = vect_A[0] * vect_B[1] - vect_A[1] * vect_B[0];
 }
 
 void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 {
 	int *i = (int *)userdata;
 	if  ( event == EVENT_LBUTTONDOWN ){
-		if(!*i){
-			center = Point(x,y);
-			finished = true;
-			return;
-		}
     	cCount++;
     	if(cCount%2 == 0){
     		line(img,points.back(), Point(x,y), Scalar(0,255,0));
     		cout<<"Distance between "<<Point(x,y)<<" and "<<points.back()<<" is "<<getDistance(points.back(),Point(x,y))<<" pixels\n";
+    		if(cCount == 4){
+    			float a1[] = {points.back().x,points.back().y,1};
+    			float a2[] = {x,y,1};
+    			cross(a1,a2,lineB);
+    			float a[3];
+    			cross(lineA,lineB,a);
+    			P[*i][0] = a[0]/a[2];
+    			P[*i][1] = a[1]/a[2];
+    			cout<<"Vanishing Point : "<<P[*i][0]<<" "<<P[*i][1]<<endl;
+    			cCount = 0;
+    			finished = true;
+    			img = orig.clone();
+    			tem = orig.clone();
+    		}
+    		else{
+    			float a1[] = {points.back().x,points.back().y,1};
+    			float a2[] = {x,y,1};
+    			cross(a1,a2,lineA);
+    		}
     		points.push_back(Point(x,y));
-    		finished = true;
     	}
     	else{
     		points.push_back(Point(x,y));
@@ -70,31 +93,29 @@ int main(int argc, char **argv){
 
 	namedWindow("Image", 1);
 	setMouseCallback("Image", CallBackFunc, &flag);
-
-	//Center choosing
-	cout<<"Select Center..\n";
+	cout<<"Select parallel lines in X-axis\n";
 	waitKey(50);
-	while(!finished){
+	while(!finished and point != 2){
 		waitKey(12);
 		imshow("Image",tem);
 	}
-	cout<<"Centre : "<<center<<endl;
-	circle(orig,center,2, Scalar(0,0,255), -1);
-	img = orig.clone();
-	tem = img.clone();
+	point = 0;
 	finished = false;
 	flag = 1;
-	cout<<"Draw line from nose tip to tail tip in X-axis..\n";
+	cout<<"Select parallel lines in Y-axis\n";
 	waitKey(50);
-	while(!finished){
+	while(!finished and point != 2){
 		waitKey(12);
 		imshow("Image",tem);
 	}
-	Point2f picFullSpan = Point2f(getDistance(center,points.back()),0.0);
-	vector<Point2f> v;
-	v.push_back(picFullSpan);
-	v.push_back(points.back() - center);
-	correspondences.push_back(v);
-
+	point = 0;
+	finished = false;
+	flag = 2;
+	cout<<"Select parallel lines in Z-axis\n";
+	waitKey(50);
+	while(!finished and point != 2){
+		waitKey(12);
+		imshow("Image",tem);
+	}
 	return 0;
 }
